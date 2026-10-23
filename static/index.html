@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RozgarMatch — jobs that fit your CV</title>
+<meta name="description" content="Paste your CV and get ranked matches from live tech job listings, with the exact skills you have and the ones each job still needs.">
+<style>
+  :root { --ink:#101418; --muted:#5b6672; --line:#e3e7ec; --accent:#0b6e4f; --bg:#fbfcfd; --chip:#eef4f1; --miss:#fdf1ec; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: Georgia, 'Times New Roman', serif; color:var(--ink); background:var(--bg); }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 40px 20px 80px; }
+  h1 { font-size: 40px; margin: 0 0 6px; letter-spacing: -0.5px; }
+  .sub { color: var(--muted); font-size: 17px; margin: 0 0 28px; line-height: 1.5; }
+  .card { background:#fff; border:1px solid var(--line); border-radius: 12px; padding: 22px; }
+  textarea { width:100%; min-height: 170px; border:1px solid var(--line); border-radius: 8px; padding: 12px; font: 14px/1.5 ui-monospace, Menlo, monospace; resize: vertical; }
+  .row { display:flex; gap: 12px; align-items:center; margin-top: 14px; flex-wrap: wrap; }
+  button { background: var(--accent); color:#fff; border:0; border-radius: 8px; padding: 12px 22px; font-size: 15px; cursor: pointer; }
+  button:disabled { opacity:.55; cursor: wait; }
+  .file { color: var(--muted); font-size: 14px; }
+  .meta { color: var(--muted); font-size: 13.5px; margin-top: 10px; }
+  h2 { font-size: 22px; margin: 34px 0 12px; }
+  .job { background:#fff; border:1px solid var(--line); border-radius: 12px; padding: 18px 20px; margin-bottom: 12px; }
+  .job-head { display:flex; justify-content: space-between; gap: 14px; align-items: baseline; }
+  .job-title { font-size: 18px; font-weight: bold; }
+  .fit { font-size: 15px; color: var(--accent); font-weight: bold; white-space: nowrap; }
+  .job-meta { color: var(--muted); font-size: 14px; margin: 3px 0 10px; }
+  .chips { display:flex; flex-wrap: wrap; gap: 6px; }
+  .chip { font: 12.5px ui-monospace, Menlo, monospace; background: var(--chip); border-radius: 999px; padding: 3px 10px; }
+  .chip.miss { background: var(--miss); }
+  .lbl { font: 11px ui-monospace, Menlo, monospace; letter-spacing: .08em; color: var(--muted); text-transform: uppercase; margin: 8px 0 4px; }
+  a.apply { color: var(--accent); font-size: 14.5px; }
+  .gaps { background:#fff; border:1px solid var(--line); border-radius: 12px; padding: 18px 20px; }
+  .err { color: #b3261e; font-size: 14.5px; margin-top: 10px; }
+  .hidden { display:none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>RozgarMatch</h1>
+  <p class="sub">Live tech jobs, ranked against your actual CV. Paste your CV below — you get the jobs you fit today, the skills each one still asks for, and the gaps worth closing first.</p>
+
+  <div class="card">
+    <textarea id="cv" placeholder="Paste your CV text here…"></textarea>
+    <div class="row">
+      <button id="go">Find my matches</button>
+      <label class="file">or upload a PDF / TXT CV <input type="file" id="file" accept=".pdf,.txt,.md"></label>
+    </div>
+    <div class="meta" id="meta"></div>
+    <div class="err hidden" id="err"></div>
+  </div>
+
+  <div id="results" class="hidden">
+    <h2>Your skill gaps, by demand</h2>
+    <div class="gaps" id="gaps"></div>
+    <h2>Best matches</h2>
+    <div id="jobs"></div>
+  </div>
+</div>
+<script>
+const $ = id => document.getElementById(id);
+async function loadMeta() {
+  const r = await fetch('/api/jobs?limit=1'); const d = await r.json();
+  $('meta').textContent = d.meta.count + ' live tech jobs indexed · updated ' + new Date(d.meta.fetched_at).toLocaleString();
+}
+loadMeta();
+$('go').onclick = async () => {
+  $('err').classList.add('hidden'); $('go').disabled = true; $('go').textContent = 'Matching…';
+  const fd = new FormData();
+  fd.append('cv_text', $('cv').value);
+  if ($('file').files[0]) fd.append('file', $('file').files[0]);
+  try {
+    const r = await fetch('/api/match', { method: 'POST', body: fd });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || 'Matching failed');
+    render(d);
+  } catch (e) {
+    $('err').textContent = e.message; $('err').classList.remove('hidden');
+  }
+  $('go').disabled = false; $('go').textContent = 'Find my matches';
+};
+function chips(list, cls) {
+  return list.length ? '<div class="chips">' + list.map(s => '<span class="chip ' + cls + '">' + s + '</span>').join('') + '</div>' : '<div class="chips"><span class="chip ' + cls + '">none</span></div>';
+}
+function render(d) {
+  $('gaps').innerHTML = d.top_gaps.length
+    ? d.top_gaps.map(g => '<div class="row" style="justify-content:space-between;border-bottom:1px solid var(--line);padding:6px 0;margin:0"><span>' + g.skill + '</span><span class="meta">asked by ' + g.in_demand_by + ' of your top matches</span></div>').join('')
+    : 'No gaps in your top matches — your CV already covers what they ask for.';
+  $('jobs').innerHTML = d.matches.map(m =>
+    '<div class="job"><div class="job-head"><span class="job-title">' + m.title + '</span><span class="fit">' + m.fit + '% fit</span></div>' +
+    '<div class="job-meta">' + m.company + ' · ' + m.location + ' · via ' + m.source + '</div>' +
+    '<div class="lbl">You have</div>' + chips(m.matched_skills, '') +
+    '<div class="lbl">Still asks for</div>' + chips(m.missing_skills, 'miss') +
+    '<div style="margin-top:10px"><a class="apply" href="' + m.url + '" target="_blank" rel="noopener">View &amp; apply →</a></div></div>'
+  ).join('');
+  $('results').classList.remove('hidden');
+  $('results').scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

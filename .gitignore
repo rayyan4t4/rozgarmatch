@@ -1,0 +1,4 @@
+.venv/
+jobs.json
+__pycache__/
+sample_cv.txt
