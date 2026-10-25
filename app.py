@@ -22,7 +22,7 @@ state = {"matcher": None, "meta": {}}
 NAV = '<nav class="nav"><a class="brand" href="/">RozgarMatch</a><span class="links"><a href="/jobs">Jobs</a><a href="/skills-in-demand">Skills in Demand</a><a href="/blog">Blog</a><a href="/how-it-works">How It Works</a><a href="/about">About</a></span></nav>'
 NAV_CSS = ".nav { display:flex; justify-content:space-between; align-items:center; padding:16px 0; border-bottom:1px solid #e3e7ec; margin-bottom:26px; flex-wrap:wrap; gap:8px; } .nav .brand { font-size:20px; font-weight:bold; color:#101418; text-decoration:none; } .nav .links a { margin-left:16px; font-size:14.5px; }"
 SLUG_SPECIAL = {"c++": "cpp", "c#": "csharp", "node.js": "nodejs"}
-BLOG_POSTS = {"cv-job-matching-guide", "skills-remote-tech-jobs-ask-for", "fresh-graduate-job-hunting", "skill-gap-analysis-study-plan"}
+BLOG_POSTS = {"cv-job-matching-guide", "skills-remote-tech-jobs-ask-for", "fresh-graduate-job-hunting", "skill-gap-analysis-study-plan", "how-to-write-cv-first-tech-job", "python-jobs-for-freshers"}
 
 
 def slugify(skill):
@@ -94,6 +94,7 @@ def skills_in_demand():
 <meta name="description" content="The most in-demand skills across live tech job listings, counted from real postings: see what employers ask for most and which skills are worth learning next.">
 <link rel="canonical" href="https://rozgarmatch.onrender.com/skills-in-demand">
 <meta name="robots" content="index, follow">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://rozgarmatch.onrender.com/skills-in-demand">
 <meta property="og:title" content="Skills in Demand — What Live Tech Jobs Ask For">
@@ -135,7 +136,7 @@ def jobs_page():
     jobs = state["matcher"].jobs if state["matcher"] else []
     links = "".join('<a class="chip" href="/jobs/' + slug + '">' + escape(skill) + "</a>" for slug, skill in sorted(skill_slugs().items(), key=lambda kv: kv[1]))
     cards = "".join(job_card(j) for j in jobs)
-    head = jobs_head("Remote Tech Jobs — Live Listings Ranked by CV Fit | RozgarMatch", "Browse live remote tech job listings indexed by RozgarMatch from RemoteOK and Arbeitnow. Match your CV to see your fit score, matched skills, and missing skills for every job.", "https://rozgarmatch.onrender.com/jobs")
+    head = jobs_head("Remote Tech Jobs — Live Listings Ranked by CV Fit | RozgarMatch", "Browse live remote tech job listings indexed by RozgarMatch from RemoteOK and Arbeitnow. Match your CV to see your fit score, matched skills, and missing skills for every job.", "https://rozgarmatch.onrender.com/jobs", crumbs=[("Home", "https://rozgarmatch.onrender.com/"), ("Jobs", "https://rozgarmatch.onrender.com/jobs")])
     body = (
         "<h1>Live remote tech jobs</h1>\n"
         '<p class="sub">' + str(len(jobs)) + ' current tech listings, indexed live. <a href="/">Match your CV</a> to rank these by your fit — or browse by skill:</p>\n'
@@ -154,7 +155,7 @@ def jobs_by_skill(slug: str):
     jobs = [j for j in state["matcher"].jobs if skill in j["skills"]]
     label = skill[:1].upper() + skill[1:]
     cards = "".join(job_card(j) for j in jobs)
-    head = jobs_head(label + " Jobs — Live Remote Listings | RozgarMatch", "Live remote tech jobs asking for " + skill + ", indexed by RozgarMatch. Match your CV to see your fit, the skills you already have, and the ones each job still needs.", "https://rozgarmatch.onrender.com/jobs/" + slug)
+    head = jobs_head(label + " Jobs — Live Remote Listings | RozgarMatch", "Live remote tech jobs asking for " + skill + ", indexed by RozgarMatch. Match your CV to see your fit, the skills you already have, and the ones each job still needs.", "https://rozgarmatch.onrender.com/jobs/" + slug, crumbs=[("Home", "https://rozgarmatch.onrender.com/"), ("Jobs", "https://rozgarmatch.onrender.com/jobs"), (label + " Jobs", "https://rozgarmatch.onrender.com/jobs/" + slug)])
     body = (
         "<h1>" + escape(label) + " jobs</h1>\n"
         '<p class="sub">' + str(len(jobs)) + ' live listings asking for ' + escape(skill) + '. <a href="/">Match your CV</a> to rank them by your fit, or <a href="/jobs">browse all jobs</a>.</p>\n' + cards
@@ -163,7 +164,11 @@ def jobs_by_skill(slug: str):
     return HTMLResponse(head + NAV + body)
 
 
-def jobs_head(title, description, canonical):
+def jobs_head(title, description, canonical, crumbs=None):
+    crumb_schema = ""
+    if crumbs:
+        items = [{"@type": "ListItem", "position": i + 1, "name": n, "item": u} for i, (n, u) in enumerate(crumbs)]
+        crumb_schema = '<script type="application/ld+json">' + json.dumps({"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": items}) + "</script>"
     return """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -173,6 +178,7 @@ def jobs_head(title, description, canonical):
 <meta name="description" content=""" + escape(description) + """>
 <link rel="canonical" href=""" + canonical + """>
 <meta name="robots" content="index, follow">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="website">
 <meta property="og:title" content=""" + escape(title) + """>
 <meta property="og:description" content=""" + escape(description) + """>
@@ -193,6 +199,7 @@ def jobs_head(title, description, canonical):
   .foot { color:#5b6672; font-size: 13.5px; margin-top: 40px; }
 """ + NAV_CSS + """
 </style>
+""" + crumb_schema + """
 </head>
 <body>
 <div class="wrap">
@@ -216,6 +223,31 @@ def about():
     return FileResponse(os.path.join(BASE, "static", "about.html"))
 
 
+@app.get("/cv-matcher")
+def cv_matcher():
+    return FileResponse(os.path.join(BASE, "static", "cv-matcher.html"))
+
+
+@app.get("/remote-jobs-pakistan")
+def remote_jobs_pakistan():
+    return FileResponse(os.path.join(BASE, "static", "remote-jobs-pakistan.html"))
+
+
+@app.get("/favicon.svg")
+def favicon_svg():
+    return FileResponse(os.path.join(BASE, "static", "favicon.svg"), media_type="image/svg+xml")
+
+
+@app.get("/favicon.ico")
+def favicon_ico():
+    return FileResponse(os.path.join(BASE, "static", "favicon.svg"), media_type="image/svg+xml")
+
+
+@app.get("/7f3a9c1e5b2d48a0a6e5c39d1f0b27aa.txt")
+def indexnow_key():
+    return PlainTextResponse("7f3a9c1e5b2d48a0a6e5c39d1f0b27aa")
+
+
 @app.get("/robots.txt")
 def robots():
     return PlainTextResponse("User-agent: *\nAllow: /\n\nSitemap: https://rozgarmatch.onrender.com/sitemap.xml\n")
@@ -225,7 +257,7 @@ def robots():
 def sitemap():
     base = "https://rozgarmatch.onrender.com"
     fetched = (state["meta"].get("fetched_at") or "")[:10] or date.today().isoformat()
-    entries = [("/", "1.0"), ("/jobs", "0.9"), ("/skills-in-demand", "0.8"), ("/how-it-works", "0.7"), ("/about", "0.7"), ("/blog", "0.8")]
+    entries = [("/", "1.0"), ("/jobs", "0.9"), ("/cv-matcher", "0.9"), ("/skills-in-demand", "0.8"), ("/remote-jobs-pakistan", "0.8"), ("/how-it-works", "0.7"), ("/about", "0.7"), ("/blog", "0.8")]
     entries += [("/blog/" + s, "0.8") for s in sorted(BLOG_POSTS)]
     entries += [("/jobs/" + s, "0.7") for s in sorted(skill_slugs())]
     urls = "".join('  <url><loc>' + base + path + "</loc><lastmod>" + fetched + "</lastmod><priority>" + prio + "</priority></url>\n" for path, prio in entries)
