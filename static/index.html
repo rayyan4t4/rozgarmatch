@@ -60,10 +60,14 @@
   .card p:last-child { margin-bottom: 0; }
   .foot { color: var(--muted); font-size: 13.5px; margin-top: 44px; }
   .foot a { color: var(--accent); }
+  .nav { display:flex; justify-content:space-between; align-items:center; padding: 4px 0 16px; border-bottom:1px solid var(--line); margin-bottom: 30px; flex-wrap: wrap; gap: 8px; }
+  .nav .brand { font-size: 20px; font-weight: bold; color: var(--ink); text-decoration: none; }
+  .nav .links a { margin-left: 16px; font-size: 14.5px; color: var(--accent); }
 </style>
 </head>
 <body>
 <div class="wrap">
+  <nav class="nav"><a class="brand" href="/">RozgarMatch</a><span class="links"><a href="/jobs">Jobs</a><a href="/skills-in-demand">Skills in Demand</a><a href="/blog">Blog</a><a href="/how-it-works">How It Works</a><a href="/about">About</a></span></nav>
   <h1>RozgarMatch</h1>
   <p class="sub">Live tech jobs, ranked against your actual CV. Paste your CV below — you get the jobs you fit today, the skills each one still asks for, and the gaps worth closing first.</p>
 
