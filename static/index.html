@@ -3,8 +3,31 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>RozgarMatch — jobs that fit your CV</title>
-<meta name="description" content="Paste your CV and get ranked matches from live tech job listings, with the exact skills you have and the ones each job still needs.">
+<title>RozgarMatch — CV Job Matching for Fresh Graduates | Live Tech Jobs Ranked by Fit</title>
+<meta name="description" content="RozgarMatch matches your CV against live tech jobs, ranks them by real fit, and shows the skills you have, the ones each job still needs, and the gaps worth closing first. Free for fresh graduates and job seekers.">
+<link rel="canonical" href="https://rozgarmatch.onrender.com/">
+<meta name="robots" content="index, follow">
+<meta name="author" content="Rayyan Khan">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="RozgarMatch">
+<meta property="og:url" content="https://rozgarmatch.onrender.com/">
+<meta property="og:title" content="RozgarMatch — jobs that fit your CV">
+<meta property="og:description" content="Paste your CV and get ranked matches from live tech job listings, with the exact skills you have and the ones each job still needs.">
+<meta property="og:image" content="https://rayyankhan.online/covers/card-rozgar.webp">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="RozgarMatch — jobs that fit your CV">
+<meta name="twitter:description" content="Paste your CV and get ranked matches from live tech job listings, with the exact skills you have and the ones each job still needs.">
+<meta name="twitter:image" content="https://rayyankhan.online/covers/card-rozgar.webp">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"WebApplication","name":"RozgarMatch","url":"https://rozgarmatch.onrender.com/","applicationCategory":"BusinessApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Rayyan Khan","url":"https://rayyankhan.online"},"description":"Matches a CV against live tech job listings, ranks jobs by fit, and shows matched skills, missing skills, and the skill gaps worth closing first."},
+{"@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"How does RozgarMatch match my CV to jobs?","acceptedAnswer":{"@type":"Answer","text":"RozgarMatch extracts skills from your CV using a 70+ skill taxonomy and scores every live listing by skill coverage (65%) and TF-IDF text similarity between your CV and the job description (35%), so each job is ranked by how well your actual CV fits it."}},
+{"@type":"Question","name":"Is RozgarMatch free?","acceptedAnswer":{"@type":"Answer","text":"Yes. RozgarMatch is completely free — paste or upload your CV and get ranked matches, the skills each job still asks for, and your top skill gaps."}},
+{"@type":"Question","name":"Where do the job listings come from?","acceptedAnswer":{"@type":"Answer","text":"Listings are pulled live from the RemoteOK and Arbeitnow public APIs, filtered to tech roles and deduplicated — strong for fresh graduates targeting remote tech work."}}
+]}
+]}
+</script>
 <style>
   :root { --ink:#101418; --muted:#5b6672; --line:#e3e7ec; --accent:#0b6e4f; --bg:#fbfcfd; --chip:#eef4f1; --miss:#fdf1ec; }
   * { box-sizing: border-box; }
@@ -33,6 +56,10 @@
   .gaps { background:#fff; border:1px solid var(--line); border-radius: 12px; padding: 18px 20px; }
   .err { color: #b3261e; font-size: 14.5px; margin-top: 10px; }
   .hidden { display:none; }
+  .card p { line-height: 1.55; margin: 0 0 10px; }
+  .card p:last-child { margin-bottom: 0; }
+  .foot { color: var(--muted); font-size: 13.5px; margin-top: 44px; }
+  .foot a { color: var(--accent); }
 </style>
 </head>
 <body>
@@ -56,6 +83,30 @@
     <h2>Best matches</h2>
     <div id="jobs"></div>
   </div>
+
+  <h2>How RozgarMatch works</h2>
+  <div class="card">
+    <p><strong>1. Add your CV.</strong> Paste the text or upload a PDF — nothing is stored.</p>
+    <p><strong>2. Get ranked matches.</strong> Every live tech listing is scored against your CV: 65% skill coverage, 35% TF-IDF text similarity.</p>
+    <p><strong>3. Close the right gaps.</strong> Each match shows the skills you already have, the ones the job still asks for, and your top gaps across all matches — so you learn what the market actually wants.</p>
+    <p><a href="/how-it-works">Read the full breakdown →</a></p>
+  </div>
+
+  <h2>Skills employers are asking for</h2>
+  <div class="card">
+    <p>See the most in-demand skills across the live listings RozgarMatch indexes right now, straight from the data: <a href="/skills-in-demand">skills in demand →</a></p>
+  </div>
+
+  <h2>Frequently asked questions</h2>
+  <div class="card">
+    <p><strong>How does RozgarMatch match my CV to jobs?</strong><br>It extracts skills from your CV using a 70+ skill taxonomy and scores every live listing by skill coverage (65%) and TF-IDF text similarity (35%), so each job is ranked by how well your actual CV fits it.</p>
+    <p><strong>Is RozgarMatch free?</strong><br>Yes — completely. Paste or upload your CV and get ranked matches, missing skills per job, and your top skill gaps.</p>
+    <p><strong>Where do the job listings come from?</strong><br>Live from the RemoteOK and Arbeitnow public APIs, filtered to tech roles and deduplicated — strong for fresh graduates targeting remote tech work.</p>
+  </div>
+
+  <footer class="foot">
+    RozgarMatch by <a href="https://rayyankhan.online">Rayyan Khan</a> · <a href="https://github.com/rayyan4t4/rozgarmatch">GitHub</a> · <a href="/how-it-works">How it works</a> · <a href="/skills-in-demand">Skills in demand</a>
+  </footer>
 </div>
 <script>
 const $ = id => document.getElementById(id);

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How RozgarMatch Works — CV-to-Job Matching and Skill Gap Analysis</title>
+<meta name="description" content="How RozgarMatch ranks live tech jobs against your CV: skill extraction with a 70+ skill taxonomy, a 65/35 fit score, per-job missing skills, and the skill gaps worth closing first.">
+<link rel="canonical" href="https://rozgarmatch.onrender.com/how-it-works">
+<meta name="robots" content="index, follow">
+<meta name="author" content="Rayyan Khan">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://rozgarmatch.onrender.com/how-it-works">
+<meta property="og:title" content="How RozgarMatch Works — CV-to-Job Matching Explained">
+<meta property="og:description" content="Skill extraction, a 65/35 fit score, per-job missing skills, and the gaps worth closing first — how RozgarMatch ranks live tech jobs against your CV.">
+<meta property="og:image" content="https://rayyankhan.online/covers/card-rozgar.webp">
+<style>
+  body { margin:0; font-family: Georgia, 'Times New Roman', serif; color:#101418; background:#fbfcfd; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 40px 20px 80px; }
+  h1 { font-size: 34px; margin: 0 0 8px; letter-spacing: -0.5px; }
+  h2 { font-size: 22px; margin: 30px 0 10px; }
+  p, li { line-height: 1.6; font-size: 16.5px; }
+  .sub { color:#5b6672; font-size: 17px; }
+  a { color:#0b6e4f; }
+  .foot { color:#5b6672; font-size: 13.5px; margin-top: 40px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>How RozgarMatch works</h1>
+  <p class="sub">Graduates apply blind. Job boards list hundreds of roles with no signal about which ones a given CV actually fits, and no honest answer to "what should I learn next?" RozgarMatch fixes that with live data and a transparent score.</p>
+
+  <h2>1. Live listings, not a static dataset</h2>
+  <p>RozgarMatch ingests current tech listings from the RemoteOK and Arbeitnow public APIs, filters them to tech roles, and deduplicates them. The index is refreshed from the app, so the jobs you are matched against are real, current postings with working apply links.</p>
+
+  <h2>2. Skills are extracted from both sides</h2>
+  <p>Your CV and every job's title, tags, and full description are scanned with a taxonomy of 70+ technical skills — languages, frameworks, tools, and platforms. Matching works on the skills a posting actually names, not on keyword stuffing.</p>
+
+  <h2>3. A fit score you can inspect</h2>
+  <p>Each job gets a fit percentage: <strong>65% skill coverage</strong> (weighted so jobs that specify more skills count more) plus <strong>35% TF-IDF text similarity</strong> between your CV and the job description. For every match you see the skills you have, the skills the job still asks for, and a direct apply link — no black box.</p>
+
+  <h2>4. Your gaps, ranked by demand</h2>
+  <p>Across your best matches, RozgarMatch aggregates the skills you are missing most often. That list is your study plan: the skills the live market is asking you for, in order. You can also browse the overall <a href="/skills-in-demand">skills in demand</a> across all indexed listings.</p>
+
+  <h2>Honest limits</h2>
+  <p>The listings are remote and global roles from the two APIs — strong for Pakistani graduates targeting remote work, not a local-jobs board yet. Fit is skills-based: it does not judge seniority, salary fit, or company quality. Skill extraction is taxonomy-based, so a skill phrased unusually may be missed.</p>
+
+  <p><a href="/">Try it — paste your CV and get your ranked matches →</a></p>
+
+  <p class="foot">RozgarMatch by <a href="https://rayyankhan.online">Rayyan Khan</a> · <a href="https://github.com/rayyan4t4/rozgarmatch">GitHub</a> · <a href="/">Match your CV</a> · <a href="/skills-in-demand">Skills in demand</a></p>
+</div>
+</body>
+</html>
